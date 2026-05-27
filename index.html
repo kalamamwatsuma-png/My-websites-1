@@ -224,23 +224,12 @@
     }
 
     /* ── ADMIN DASHBOARD STYLES ── */
-   #admin-panel {
-  display: none;
-  position: fixed;
-  top: 0; left: 0; right: 0; bottom: 0;
-  background: var(--navy);
-  z-index: 1000;
-  overflow-y: auto;
-  padding: 80px 24px 40px;
-  pointer-events: none; /* Prevent interaction when hidden */
-  opacity: 0;
-  transition: opacity 0.2s ease;
-}
-#admin-panel.active {
-  display: block;
-  pointer-events: auto; /* Enable interaction when active */
-  opacity: 1;
-}
+    #admin-panel {
+      display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+      background: var(--navy); z-index: 1000; overflow-y: auto;
+      padding: 80px 24px 40px;
+    }
+    #admin-panel.active { display: block; }
     
     .admin-header {
       display: flex; justify-content: space-between; align-items: center;
@@ -756,12 +745,7 @@
       <div class="admin-title">⚙️ Admin Dashboard</div>
       <div style="display: flex; gap: 12px; align-items: center;">
         <span id="admin-email" style="font-size: 0.85rem; color: var(--muted);"></span>
-       <!-- Desktop nav admin button -->
-<button class="btn-admin" id="admin-toggle" onclick="toggleAdminPanel()">⚙️ Admin</button>
-<button class="btn-logout" id="logout-btn" style="display:none;" onclick="handleLogout()">Logout</button>
-
-<!-- Mobile menu admin button -->
-<button class="btn-admin" id="admin-toggle-mobile" onclick="toggleAdminPanel(); toggleMenu()">⚙️ Admin</button>
+        <button class="btn-logout" onclick="handleLogout()">Logout</button>
       </div>
     </div>
 
@@ -848,65 +832,6 @@
   </div>
 
   <script>
-    // ═══════════════════════════════════════════════════════════════
-// ADMIN TOGGLE & AUTH FUNCTIONS (Defined early for reliability)
-// ═══════════════════════════════════════════════════════════════
-
-function toggleAdminPanel() {
-  const panel = document.getElementById("admin-panel");
-  if (!panel) {
-    console.error("Admin panel element not found");
-    return;
-  }
-  panel.classList.toggle("active");
-  console.log("Admin panel toggled:", panel.classList.contains("active"));
-  
-  if (panel.classList.contains("active")) {
-    checkAuthState();
-  }
-}
-
-async function checkAuthState() {
-  try {
-    const { data: { session } } = await supabase.auth.getSession();
-    if (session?.user?.email?.toLowerCase() === ADMIN_EMAIL.toLowerCase()) {
-      showAdminContent(session.user.email);
-    } else {
-      showAuthForm();
-    }
-  } catch (err) {
-    console.error("Auth check error:", err);
-    showAuthForm();
-  }
-}
-
-function showAuthForm() {
-  const authForm = document.getElementById("auth-form");
-  const adminContent = document.getElementById("admin-content");
-  const authError = document.getElementById("auth-error");
-  const adminEmailDisplay = document.getElementById("admin-email");
-  
-  if (authForm) authForm.style.display = "block";
-  if (adminContent) adminContent.style.display = "none";
-  if (authError) authError.style.display = "none";
-  if (adminEmailDisplay) adminEmailDisplay.textContent = "";
-}
-
-function showAdminContent(email) {
-  const authForm = document.getElementById("auth-form");
-  const adminContent = document.getElementById("admin-content");
-  const adminEmailDisplay = document.getElementById("admin-email");
-  
-  if (authForm) authForm.style.display = "none";
-  if (adminContent) adminContent.style.display = "block";
-  if (adminEmailDisplay) adminEmailDisplay.textContent = email;
-  loadMessages();
-}
-
-async function handleLogout() {
-  await supabase.auth.signOut();
-  showAuthForm();
-}
     // ═══════════════════════════════════════════════════════════════
     // SUPABASE CONFIGURATION (Your credentials)
     // ═══════════════════════════════════════════════════════════════
@@ -1289,17 +1214,6 @@ async function handleLogout() {
         checkAuthState();
       }
     });
-    // Debug: Verify admin functions are accessible
-document.addEventListener("DOMContentLoaded", () => {
-  console.log("✅ Admin functions loaded:", typeof toggleAdminPanel === "function");
-  const btn = document.getElementById("admin-toggle");
-  if (btn) {
-    console.log("✅ Admin button found");
-    btn.addEventListener("click", () => console.log("🖱️ Admin button clicked"));
-  } else {
-    console.error("❌ Admin button NOT found");
-  }
-});
   </script>
 </body>
 </html>
