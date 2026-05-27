@@ -7,7 +7,9 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
-
+  <!-- Supabase JS Client -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  
   <style>
     :root {
       --orange: #FF6B00;
@@ -18,6 +20,8 @@
       --border: rgba(255,107,0,0.18);
       --text: #f0f2f8;
       --muted: #8a9bc0;
+      --success: #00e676;
+      --error: #ff6b6b;
     }
 
     * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -95,6 +99,18 @@
       font-family: 'Syne', sans-serif;
     }
     .btn-outline:hover { border-color: var(--orange); color: var(--orange); }
+    .btn-admin {
+      background: var(--blue); color: white; font-weight: 600;
+      padding: 8px 16px; border-radius: 6px; border: none;
+      cursor: pointer; font-size: 0.8rem; transition: opacity 0.2s;
+    }
+    .btn-admin:hover { opacity: 0.9; }
+    .btn-logout {
+      background: transparent; color: var(--muted); border: 1px solid var(--border);
+      padding: 6px 14px; border-radius: 6px; cursor: pointer; font-size: 0.8rem;
+      transition: all 0.2s;
+    }
+    .btn-logout:hover { border-color: var(--orange); color: var(--orange); }
 
     /* Cards */
     .project-card {
@@ -206,6 +222,106 @@
       .desktop-nav { display: none !important; }
       .hamburger { display: block !important; }
     }
+
+    /* ── ADMIN DASHBOARD STYLES ── */
+    #admin-panel {
+      display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+      background: var(--navy); z-index: 1000; overflow-y: auto;
+      padding: 80px 24px 40px;
+    }
+    #admin-panel.active { display: block; }
+    
+    .admin-header {
+      display: flex; justify-content: space-between; align-items: center;
+      max-width: 1200px; margin: 0 auto 32px; padding: 0 12px;
+      border-bottom: 1px solid var(--border); padding-bottom: 16px;
+    }
+    .admin-title { font-size: 1.4rem; font-weight: 700; color: var(--orange); }
+    
+    .admin-card {
+      background: var(--card); border: 1px solid var(--border);
+      border-radius: 12px; padding: 24px; margin-bottom: 20px;
+    }
+    
+    .messages-table {
+      width: 100%; border-collapse: collapse; font-size: 0.9rem;
+    }
+    .messages-table th {
+      text-align: left; padding: 12px 16px; color: var(--muted);
+      font-weight: 600; border-bottom: 1px solid var(--border);
+      font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.04em;
+    }
+    .messages-table td {
+      padding: 14px 16px; border-bottom: 1px solid rgba(255,255,255,0.05);
+      vertical-align: top;
+    }
+    .messages-table tr:last-child td { border-bottom: none; }
+    .messages-table .message-text {
+      color: var(--muted); font-size: 0.85rem; line-height: 1.5;
+      max-width: 300px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    }
+    .messages-table .timestamp {
+      color: var(--muted); font-size: 0.75rem; white-space: nowrap;
+    }
+    .messages-table .service-tag {
+      display: inline-block; padding: 3px 10px;
+      background: rgba(255,107,0,0.15); border-radius: 4px;
+      font-size: 0.7rem; color: var(--orange); font-weight: 600;
+    }
+    
+    .auth-form {
+      max-width: 400px; margin: 100px auto; background: var(--card);
+      border: 1px solid var(--border); border-radius: 16px; padding: 32px;
+    }
+    .auth-form h3 { margin-bottom: 24px; font-weight: 700; text-align: center; }
+    .auth-form .form-input { margin-bottom: 16px; }
+    .auth-form .btn-primary { width: 100%; justify-content: center; }
+    .auth-error {
+      color: var(--error); font-size: 0.85rem; margin-bottom: 16px;
+      background: rgba(255,107,107,0.1); border: 1px solid rgba(255,107,107,0.3);
+      border-radius: 8px; padding: 10px 14px; display: none;
+    }
+    
+    .loading { text-align: center; color: var(--muted); padding: 40px; }
+    .no-messages { text-align: center; color: var(--muted); padding: 40px; }
+    
+    .admin-actions { display: flex; gap: 8px; }
+    .btn-small {
+      padding: 6px 12px; font-size: 0.75rem; border-radius: 4px;
+      border: none; cursor: pointer; font-weight: 600;
+    }
+    .btn-view { background: rgba(0,82,204,0.2); color: #7eb3ff; }
+    .btn-view:hover { background: rgba(0,82,204,0.35); }
+    .btn-delete { background: rgba(255,107,107,0.2); color: var(--error); }
+    .btn-delete:hover { background: rgba(255,107,107,0.35); }
+    
+    .modal {
+      display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(6,11,24,0.9); z-index: 1100; align-items: center;
+      justify-content: center; padding: 24px;
+    }
+    .modal.active { display: flex; }
+    .modal-content {
+      background: var(--card); border: 1px solid var(--border);
+      border-radius: 16px; padding: 32px; max-width: 600px; width: 100%;
+      max-height: 80vh; overflow-y: auto;
+    }
+    .modal-header {
+      display: flex; justify-content: space-between; align-items: center;
+      margin-bottom: 20px; padding-bottom: 16px; border-bottom: 1px solid var(--border);
+    }
+    .modal-close {
+      background: none; border: none; color: var(--muted); font-size: 1.5rem;
+      cursor: pointer; line-height: 1;
+    }
+    .modal-close:hover { color: var(--orange); }
+    .modal-field { margin-bottom: 16px; }
+    .modal-label {
+      display: block; font-size: 0.75rem; color: var(--muted);
+      text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 6px;
+    }
+    .modal-value { font-size: 0.95rem; line-height: 1.6; word-break: break-word; }
+    .modal-value.email { color: var(--orange); font-weight: 600; }
   </style>
 </head>
 <body>
@@ -228,6 +344,9 @@
         <span class="nav-link" data-target="portfolio" onclick="scrollToSection('portfolio')">Portfolio</span>
         <span class="nav-link" data-target="contact" onclick="scrollToSection('contact')">Contact</span>
         <button class="btn-primary" style="padding: 10px 22px; font-size: 0.8rem;" onclick="scrollToSection('contact')">Hire Me</button>
+        <!-- Admin Toggle Button -->
+        <button class="btn-admin" id="admin-toggle" onclick="toggleAdminPanel()">⚙️ Admin</button>
+        <button class="btn-logout" id="logout-btn" style="display:none;" onclick="handleLogout()">Logout</button>
       </div>
 
       <button onclick="toggleMenu()" style="background: none; border: none; color: white; cursor: pointer; font-size: 1.4rem; display: none;" class="hamburger">☰</button>
@@ -239,6 +358,7 @@
       <span class="nav-link" onclick="scrollToSection('services'); toggleMenu()">Services</span>
       <span class="nav-link" onclick="scrollToSection('portfolio'); toggleMenu()">Portfolio</span>
       <span class="nav-link" onclick="scrollToSection('contact'); toggleMenu()">Contact</span>
+      <button class="btn-admin" id="admin-toggle-mobile" onclick="toggleAdminPanel(); toggleMenu()">⚙️ Admin</button>
     </div>
   </nav>
 
@@ -591,9 +711,9 @@
               <textarea class="form-input" name="message" rows="5" placeholder="Tell us about your project..." required style="resize: vertical;"></textarea>
             </div>
 
-            <div id="form-error" style="display: none; color: #ff6b6b; font-size: 0.85rem;"></div>
-            <div id="form-success" style="display: none; background: rgba(0,230,118,0.1); border: 1px solid rgba(0,230,118,0.3); border-radius: 8px; padding: 12px 16px; color: #00e676; font-size: 0.9rem;">✅ Message sent! We'll be in touch within 24 hours.</div>
-            <div id="form-general-error" style="display: none; background: rgba(255,107,107,0.1); border: 1px solid rgba(255,107,107,0.3); border-radius: 8px; padding: 12px 16px; color: #ff6b6b; font-size: 0.9rem;">⚠️ Something went wrong. Please try WhatsApp or email instead.</div>
+            <div id="form-error" style="display: none; color: var(--error); font-size: 0.85rem;"></div>
+            <div id="form-success" style="display: none; background: rgba(0,230,118,0.1); border: 1px solid rgba(0,230,118,0.3); border-radius: 8px; padding: 12px 16px; color: var(--success); font-size: 0.9rem;">✅ Message sent! We'll be in touch within 24 hours.</div>
+            <div id="form-general-error" style="display: none; background: rgba(255,107,107,0.1); border: 1px solid rgba(255,107,107,0.3); border-radius: 8px; padding: 12px 16px; color: var(--error); font-size: 0.9rem;">⚠️ Something went wrong. Please try WhatsApp or email instead.</div>
 
             <button type="submit" class="btn-primary" id="submit-btn" style="width: 100%; justify-content: center;">Send Message →</button>
           </form>
@@ -617,12 +737,116 @@
     </div>
   </footer>
 
-  <script>
-    // ── Supabase config ──────────────────────────────────────────────────────
-    const SUPABASE_URL = "https://mijeeteozinmbxfwgttc.supabase.co"; // Replace with actual URL
-    const SUPABASE_ANON_KEY = "sb_publishable_o0bEAkCtVHvZJ9Ld0q-Zag_79YjWSw1";        // Replace with actual key
+  <!-- ═══════════════════════════════════════════════════════════════ -->
+  <!-- ADMIN DASHBOARD (Hidden by default) -->
+  <!-- ═══════════════════════════════════════════════════════════════ -->
+  <div id="admin-panel">
+    <div class="admin-header">
+      <div class="admin-title">⚙️ Admin Dashboard</div>
+      <div style="display: flex; gap: 12px; align-items: center;">
+        <span id="admin-email" style="font-size: 0.85rem; color: var(--muted);"></span>
+        <button class="btn-logout" onclick="handleLogout()">Logout</button>
+      </div>
+    </div>
 
-    // ── DOM Elements ──────────────────────────────────────────────────────────
+    <!-- Auth Form (shown when not logged in) -->
+    <div id="auth-form" class="auth-form">
+      <h3>Admin Access</h3>
+      <div id="auth-error" class="auth-error"></div>
+      <input class="form-input" id="admin-email-input" type="email" placeholder="Your email address" autocomplete="username">
+      <input class="form-input" id="admin-password-input" type="password" placeholder="Password" autocomplete="current-password">
+      <button class="btn-primary" id="auth-submit" style="width: 100%; justify-content: center;" onclick="handleAuthSubmit()">Sign In</button>
+      <p style="text-align: center; color: var(--muted); font-size: 0.8rem; margin-top: 16px;">
+        Only authorized administrators can access this panel.
+      </p>
+    </div>
+
+    <!-- Messages List (shown when logged in) -->
+    <div id="admin-content" style="display: none;">
+      <div class="admin-card">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+          <h3 style="font-weight: 700;">Contact Messages</h3>
+          <button class="btn-outline" style="font-size: 0.8rem; padding: 6px 14px;" onclick="loadMessages()">↻ Refresh</button>
+        </div>
+        <div id="messages-loading" class="loading" style="display: none;">Loading messages...</div>
+        <div id="messages-empty" class="no-messages" style="display: none;">No messages yet.</div>
+        <div style="overflow-x: auto;">
+          <table class="messages-table">
+            <thead>
+              <tr>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Service</th>
+                <th>Message</th>
+                <th>Received</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="messages-body"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Message Detail Modal -->
+  <div id="message-modal" class="modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 style="font-weight: 700;">Message Details</h3>
+        <button class="modal-close" onclick="closeModal()">&times;</button>
+      </div>
+      <div class="modal-field">
+        <span class="modal-label">Name</span>
+        <div class="modal-value" id="modal-name"></div>
+      </div>
+      <div class="modal-field">
+        <span class="modal-label">Email</span>
+        <div class="modal-value email" id="modal-email"></div>
+      </div>
+      <div class="modal-field">
+        <span class="modal-label">Phone</span>
+        <div class="modal-value" id="modal-phone"></div>
+      </div>
+      <div class="modal-field">
+        <span class="modal-label">Service</span>
+        <div class="modal-value" id="modal-service"></div>
+      </div>
+      <div class="modal-field">
+        <span class="modal-label">Message</span>
+        <div class="modal-value" id="modal-message" style="white-space: pre-wrap;"></div>
+      </div>
+      <div class="modal-field">
+        <span class="modal-label">Received</span>
+        <div class="modal-value" id="modal-timestamp"></div>
+      </div>
+      <div style="display: flex; gap: 12px; margin-top: 24px; padding-top: 16px; border-top: 1px solid var(--border);">
+        <a id="modal-email-link" href="#" target="_blank" style="text-decoration: none;">
+          <button class="btn-primary" style="font-size: 0.8rem; padding: 8px 16px;">✉️ Reply via Email</button>
+        </a>
+        <a id="modal-whatsapp-link" href="#" target="_blank" style="text-decoration: none;">
+          <button class="btn-outline" style="font-size: 0.8rem; padding: 8px 16px;">💬 WhatsApp</button>
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // ═══════════════════════════════════════════════════════════════
+    // SUPABASE CONFIGURATION (Your credentials)
+    // ═══════════════════════════════════════════════════════════════
+    const SUPABASE_URL = "https://mijeeteozinmbxfwgttc.supabase.co";
+    const SUPABASE_ANON_KEY = "sb_publishable_o0bEAkCtVHvZJ9Ld0q-Zag_79YjWSw1";
+    
+    // Initialize Supabase client
+    const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+    
+    // Authorized admin email (CHANGE THIS to your email)
+    const ADMIN_EMAIL = "manucreations36@gmail.com";
+
+    // ═══════════════════════════════════════════════════════════════
+    // DOM ELEMENTS
+    // ═══════════════════════════════════════════════════════════════
     const sections = ["home", "about", "services", "portfolio", "contact"];
     const navLinks = document.querySelectorAll(".nav-link[data-target]");
     const mobileMenu = document.getElementById("mobile-menu");
@@ -634,8 +858,24 @@
     const formError = document.getElementById("form-error");
     const formSuccess = document.getElementById("form-success");
     const formGeneralError = document.getElementById("form-general-error");
+    
+    // Admin elements
+    const adminPanel = document.getElementById("admin-panel");
+    const authForm = document.getElementById("auth-form");
+    const adminContent = document.getElementById("admin-content");
+    const authError = document.getElementById("auth-error");
+    const adminEmailInput = document.getElementById("admin-email-input");
+    const adminPasswordInput = document.getElementById("admin-password-input");
+    const authSubmitBtn = document.getElementById("auth-submit");
+    const adminEmailDisplay = document.getElementById("admin-email");
+    const messagesBody = document.getElementById("messages-body");
+    const messagesLoading = document.getElementById("messages-loading");
+    const messagesEmpty = document.getElementById("messages-empty");
+    const messageModal = document.getElementById("message-modal");
 
-    // ── Scroll Spy ────────────────────────────────────────────────────────────
+    // ═══════════════════════════════════════════════════════════════
+    // SCROLL SPY & NAVIGATION
+    // ═══════════════════════════════════════════════════════════════
     function updateActiveSection() {
       let current = sections[0];
       sections.forEach(id => {
@@ -645,31 +885,29 @@
           if (rect.top <= 100 && rect.bottom >= 100) current = id;
         }
       });
-      
       navLinks.forEach(link => {
         link.classList.toggle("active", link.dataset.target === current);
       });
     }
     window.addEventListener("scroll", updateActiveSection);
 
-    // ── Smooth Scroll ─────────────────────────────────────────────────────────
     function scrollToSection(id) {
       document.getElementById(id)?.scrollIntoView({ behavior: "smooth" });
       if (window.innerWidth <= 768) mobileMenu.style.display = "none";
     }
 
-    // ── Mobile Menu ───────────────────────────────────────────────────────────
     function toggleMenu() {
       mobileMenu.style.display = mobileMenu.style.display === "flex" ? "none" : "flex";
     }
 
-    // ── Portfolio Filter ──────────────────────────────────────────────────────
+    // ═══════════════════════════════════════════════════════════════
+    // PORTFOLIO FILTER
+    // ═══════════════════════════════════════════════════════════════
     filterChips.forEach(chip => {
       chip.addEventListener("click", () => {
         filterChips.forEach(c => c.classList.remove("active"));
         chip.classList.add("active");
         const filter = chip.dataset.filter;
-        
         projectCards.forEach(card => {
           const cat = card.dataset.category;
           card.style.display = (filter === "All" || cat === filter) ? "block" : "none";
@@ -677,7 +915,9 @@
       });
     });
 
-    // ── Animated Counters ─────────────────────────────────────────────────────
+    // ═══════════════════════════════════════════════════════════════
+    // ANIMATED COUNTERS
+    // ═══════════════════════════════════════════════════════════════
     function animateCounter(element, target, suffix) {
       let start = 0;
       const step = Math.ceil(target / 60);
@@ -706,7 +946,9 @@
 
     statCards.forEach(card => counterObserver.observe(card));
 
-    // ── Form Handling ─────────────────────────────────────────────────────────
+    // ═══════════════════════════════════════════════════════════════
+    // CONTACT FORM HANDLING
+    // ═══════════════════════════════════════════════════════════════
     form.addEventListener("submit", async (e) => {
       e.preventDefault();
       const formData = new FormData(form);
@@ -734,22 +976,16 @@
       submitBtn.disabled = true;
 
       try {
-        const res = await fetch(`${SUPABASE_URL}/rest/v1/contact_messages`, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            apikey: SUPABASE_ANON_KEY,
-            Authorization: `Bearer ${SUPABASE_ANON_KEY}`,
-            Prefer: "return=minimal"
-          },
-          body: JSON.stringify(data)
-        });
-
-        if (!res.ok) throw new Error("Insert failed");
+        const { error } = await supabase
+          .from("contact_messages")
+          .insert([data]);
+        
+        if (error) throw error;
         
         formSuccess.style.display = "block";
         form.reset();
       } catch (err) {
+        console.error("Form error:", err);
         formGeneralError.style.display = "block";
       } finally {
         submitBtn.textContent = "Send Message →";
@@ -757,8 +993,227 @@
       }
     });
 
-    // Initial check
+    // ═══════════════════════════════════════════════════════════════
+    // ADMIN DASHBOARD FUNCTIONS
+    // ═══════════════════════════════════════════════════════════════
+    
+    // Toggle admin panel visibility
+    function toggleAdminPanel() {
+      adminPanel.classList.toggle("active");
+      if (adminPanel.classList.contains("active")) {
+        checkAuthState();
+      }
+    }
+
+    // Check if user is authenticated
+    async function checkAuthState() {
+      const { data: { session } } = await supabase.auth.getSession();
+      
+      if (session?.user?.email?.toLowerCase() === ADMIN_EMAIL.toLowerCase()) {
+        showAdminContent(session.user.email);
+      } else {
+        showAuthForm();
+      }
+    }
+
+    // Show authentication form
+    function showAuthForm() {
+      authForm.style.display = "block";
+      adminContent.style.display = "none";
+      authError.style.display = "none";
+      adminEmailDisplay.textContent = "";
+    }
+
+    // Show admin content
+    function showAdminContent(email) {
+      authForm.style.display = "none";
+      adminContent.style.display = "block";
+      adminEmailDisplay.textContent = email;
+      loadMessages();
+    }
+
+    // Handle authentication submit
+    async function handleAuthSubmit() {
+      const email = adminEmailInput.value.trim();
+      const password = adminPasswordInput.value;
+      
+      authError.style.display = "none";
+      authSubmitBtn.disabled = true;
+      authSubmitBtn.textContent = "Signing in...";
+
+      // Check if email matches authorized admin
+      if (email.toLowerCase() !== ADMIN_EMAIL.toLowerCase()) {
+        authError.textContent = "Access denied. Unauthorized email address.";
+        authError.style.display = "block";
+        authSubmitBtn.disabled = false;
+        authSubmitBtn.textContent = "Sign In";
+        return;
+      }
+
+      try {
+        const { data, error } = await supabase.auth.signInWithPassword({
+          email,
+          password
+        });
+
+        if (error) throw error;
+        
+        // Double-check email after successful sign in
+        if (data.user?.email?.toLowerCase() !== ADMIN_EMAIL.toLowerCase()) {
+          await supabase.auth.signOut();
+          throw new Error("Unauthorized access");
+        }
+        
+        adminEmailInput.value = "";
+        adminPasswordInput.value = "";
+        showAdminContent(data.user.email);
+      } catch (err) {
+        console.error("Auth error:", err);
+        authError.textContent = err.message || "Sign in failed. Please check your credentials.";
+        authError.style.display = "block";
+      } finally {
+        authSubmitBtn.disabled = false;
+        authSubmitBtn.textContent = "Sign In";
+      }
+    }
+
+    // Handle logout
+    async function handleLogout() {
+      await supabase.auth.signOut();
+      showAuthForm();
+    }
+
+    // Load messages from Supabase
+    async function loadMessages() {
+      messagesLoading.style.display = "block";
+      messagesEmpty.style.display = "none";
+      messagesBody.innerHTML = "";
+
+      try {
+        const { data, error } = await supabase
+          .from("contact_messages")
+          .select("*")
+          .order("created_at", { ascending: false });
+
+        if (error) throw error;
+
+        messagesLoading.style.display = "none";
+
+        if (!data || data.length === 0) {
+          messagesEmpty.style.display = "block";
+          return;
+        }
+
+        data.forEach(msg => {
+          const row = document.createElement("tr");
+          const timestamp = msg.created_at 
+            ? new Date(msg.created_at).toLocaleString("en-KE", { 
+                year: "numeric", month: "short", day: "numeric",
+                hour: "2-digit", minute: "2-digit"
+              })
+            : "Unknown";
+          
+          row.innerHTML = `
+            <td><strong>${escapeHtml(msg.name || "—")}</strong></td>
+            <td><a href="mailto:${escapeHtml(msg.email)}" style="color:var(--orange);text-decoration:none;">${escapeHtml(msg.email || "—")}</a></td>
+            <td>${msg.service ? `<span class="service-tag">${escapeHtml(msg.service)}</span>` : "—"}</td>
+            <td><div class="message-text" title="${escapeHtml(msg.message)}">${escapeHtml(msg.message || "—")}</div></td>
+            <td class="timestamp">${timestamp}</td>
+            <td class="admin-actions">
+              <button class="btn-small btn-view" onclick="viewMessage('${msg.id}')">View</button>
+              <button class="btn-small btn-delete" onclick="deleteMessage('${msg.id}')">Delete</button>
+            </td>
+          `;
+          messagesBody.appendChild(row);
+        });
+      } catch (err) {
+        console.error("Load error:", err);
+        messagesLoading.style.display = "none";
+        messagesBody.innerHTML = `<tr><td colspan="6" style="text-align:center;color:var(--error);padding:20px;">Failed to load messages</td></tr>`;
+      }
+    }
+
+    // View message in modal
+    function viewMessage(id) {
+      // In production, fetch the specific message from Supabase
+      // For demo, we'll use the data already loaded in the table
+      const row = event.target.closest("tr");
+      const cells = row.querySelectorAll("td");
+      
+      document.getElementById("modal-name").textContent = cells[0].textContent;
+      document.getElementById("modal-email").textContent = cells[1].textContent;
+      document.getElementById("modal-phone").textContent = "—"; // Would fetch from DB
+      document.getElementById("modal-service").textContent = cells[2].textContent === "—" ? "Not specified" : cells[2].textContent;
+      document.getElementById("modal-message").textContent = cells[3].querySelector(".message-text").title;
+      document.getElementById("modal-timestamp").textContent = cells[4].textContent;
+      
+      const email = cells[1].querySelector("a")?.href?.replace("mailto:", "") || "";
+      document.getElementById("modal-email-link").href = email ? `mailto:${email}` : "#";
+      document.getElementById("modal-whatsapp-link").href = email ? `https://wa.me/?text=Hi%20${encodeURIComponent(cells[0].textContent)},%20regarding%20your%20inquiry...` : "#";
+      
+      messageModal.classList.add("active");
+    }
+
+    // Close modal
+    function closeModal() {
+      messageModal.classList.remove("active");
+    }
+
+    // Delete message (with confirmation)
+    async function deleteMessage(id) {
+      if (!confirm("Are you sure you want to delete this message? This cannot be undone.")) {
+        return;
+      }
+
+      try {
+        const { error } = await supabase
+          .from("contact_messages")
+          .delete()
+          .eq("id", id);
+        
+        if (error) throw error;
+        
+        loadMessages(); // Refresh list
+      } catch (err) {
+        console.error("Delete error:", err);
+        alert("Failed to delete message. Please try again.");
+      }
+    }
+
+    // Escape HTML to prevent XSS
+    function escapeHtml(text) {
+      if (!text) return "";
+      const div = document.createElement("div");
+      div.textContent = text;
+      return div.innerHTML;
+    }
+
+    // Close modal when clicking outside
+    messageModal.addEventListener("click", (e) => {
+      if (e.target === messageModal) closeModal();
+    });
+
+    // Close modal with Escape key
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "Escape") {
+        closeModal();
+        if (adminPanel.classList.contains("active")) {
+          adminPanel.classList.remove("active");
+        }
+      }
+    });
+
+    // ═══════════════════════════════════════════════════════════════
+    // INITIALIZATION
+    // ═══════════════════════════════════════════════════════════════
     updateActiveSection();
+
+    // Listen for auth state changes
+    supabase.auth.onAuthStateChange((event, session) => {
+      if (adminPanel.classList.contains("active")) {
+        checkAuthState();
+      }
+    });
   </script>
 </body>
 </html>
