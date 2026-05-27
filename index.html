@@ -1,0 +1,764 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Manu Creations | Digital Agency</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --orange: #FF6B00;
+      --blue: #0052CC;
+      --navy: #060b18;
+      --navy2: #0d1526;
+      --card: #0f1c35;
+      --border: rgba(255,107,0,0.18);
+      --text: #f0f2f8;
+      --muted: #8a9bc0;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body { 
+      background: var(--navy); 
+      color: var(--text); 
+      font-family: 'Syne', 'DM Sans', sans-serif; 
+      overflow-x: hidden; 
+      line-height: 1.6;
+    }
+
+    /* Scrollbar */
+    ::-webkit-scrollbar { width: 4px; }
+    ::-webkit-scrollbar-track { background: var(--navy); }
+    ::-webkit-scrollbar-thumb { background: var(--orange); border-radius: 2px; }
+
+    /* Nav */
+    .nav-link {
+      position: relative; cursor: pointer; font-size: 0.9rem;
+      font-weight: 600; letter-spacing: 0.05em; text-transform: uppercase;
+      color: var(--muted); transition: color 0.2s; padding: 4px 0;
+    }
+    .nav-link::after {
+      content: ''; position: absolute; bottom: 0; left: 0;
+      width: 0; height: 2px; background: var(--orange); transition: width 0.3s;
+    }
+    .nav-link:hover, .nav-link.active { color: var(--text); }
+    .nav-link:hover::after, .nav-link.active::after { width: 100%; }
+
+    /* Hero */
+    .hero-gradient {
+      background: radial-gradient(ellipse 80% 60% at 70% 40%, rgba(0,82,204,0.18) 0%, transparent 60%),
+                  radial-gradient(ellipse 50% 50% at 20% 70%, rgba(255,107,0,0.12) 0%, transparent 60%),
+                  var(--navy);
+    }
+
+    /* Grid lines */
+    .grid-lines {
+      background-image:
+        linear-gradient(rgba(255,107,0,0.04) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,107,0,0.04) 1px, transparent 1px);
+      background-size: 60px 60px;
+    }
+
+    /* Glow pill */
+    .glow-pill {
+      display: inline-block; padding: 6px 16px;
+      background: rgba(255,107,0,0.1); border: 1px solid rgba(255,107,0,0.3);
+      border-radius: 999px; font-size: 0.75rem; font-weight: 700;
+      letter-spacing: 0.12em; text-transform: uppercase; color: var(--orange);
+    }
+
+    /* Buttons */
+    .btn-primary { 
+      display: inline-flex; align-items: center; gap: 8px;
+      background: var(--orange); color: white; font-weight: 700;
+      font-size: 0.9rem; letter-spacing: 0.04em; padding: 14px 32px;
+      border-radius: 4px; cursor: pointer; border: none;
+      transition: transform 0.2s, box-shadow 0.2s;
+      font-family: 'Syne', sans-serif;
+      box-shadow: 0 0 0 rgba(255,107,0,0);
+    }
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 30px rgba(255,107,0,0.4);
+    }
+    .btn-primary:disabled { opacity: 0.7; cursor: not-allowed; }
+    .btn-outline {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: transparent; color: var(--text); font-weight: 600;
+      font-size: 0.9rem; padding: 13px 30px; border-radius: 4px;
+       cursor: pointer; border: 1px solid rgba(255,255,255,0.2);
+      transition: border-color 0.2s, color 0.2s;
+      font-family: 'Syne', sans-serif;
+    }
+    .btn-outline:hover { border-color: var(--orange); color: var(--orange); }
+
+    /* Cards */
+    .project-card {
+      background: var(--card); border: 1px solid var(--border);
+      border-radius: 12px; overflow: hidden;
+      transition: transform 0.3s, box-shadow 0.3s, border-color 0.3s;
+    }
+    .project-card:hover {
+      transform: translateY(-6px);
+      box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+      border-color: rgba(255,107,0,0.4);
+    }
+
+    .service-card {
+      background: var(--card); border: 1px solid var(--border);
+      border-radius: 12px; padding: 32px 28px;
+      transition: transform 0.25s, border-color 0.25s, box-shadow 0.25s;
+    }
+    .service-card:hover {
+      transform: translateY(-4px);
+      border-color: rgba(255,107,0,0.5);
+      box-shadow: 0 12px 40px rgba(255,107,0,0.08);
+    }
+
+    /* Stat card */
+    .stat-card {
+      background: linear-gradient(135deg, var(--card), rgba(15,28,53,0.6));
+      border: 1px solid var(--border); border-radius: 12px;
+      padding: 28px 24px; text-align: center;
+    }
+
+    /* Input */
+    .form-input {
+      width: 100%; background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.12); border-radius: 8px;
+      padding: 14px 16px; color: var(--text); font-size: 0.95rem;
+      font-family: 'DM Sans', sans-serif; outline: none;
+      transition: border-color 0.2s;
+    }
+    .form-input:focus { border-color: var(--orange); }
+    .form-input::placeholder { color: var(--muted); }
+
+    /* Filter chip */
+    .filter-chip {
+      padding: 8px 20px; border-radius: 999px; font-size: 0.8rem;
+      font-weight: 600; cursor: pointer; letter-spacing: 0.04em;
+      border: 1px solid rgba(255,255,255,0.12);
+      background: transparent; color: var(--muted);
+      transition: all 0.2s; font-family: 'Syne', sans-serif;
+    } 
+    .filter-chip:hover { border-color: var(--orange); color: var(--text); }
+    .filter-chip.active {
+      background: var(--orange); border-color: var(--orange);
+      color: white;
+    }
+
+    /* Section heading */
+    .section-title {
+      font-size: clamp(2rem, 5vw, 3.2rem); font-weight: 800;
+      line-height: 1.1; letter-spacing: -0.02em;
+    }
+
+    /* Tag */
+    .tag {
+      display: inline-block; padding: 3px 10px;
+      background: rgba(0,82,204,0.2); border: 1px solid rgba(0,82,204,0.3);
+      border-radius: 4px; font-size: 0.72rem; font-weight: 600;
+      color: #7eb3ff; letter-spacing: 0.04em;
+    }
+
+    /* Divider accent */
+    .accent-line {
+      display: inline-block; width: 60px; height: 4px; 
+      background: linear-gradient(90deg, var(--orange), transparent);
+      border-radius: 2px;
+    }
+
+    /* Float animation */
+    @keyframes float {
+      0%, 100% { transform: translateY(0px); }
+      50% { transform: translateY(-12px); }
+    }
+    .float { animation: float 4s ease-in-out infinite; }
+
+    /* Fade in up */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(24px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .fade-up { animation: fadeUp 0.7s ease both; }
+    .fade-up-d1 { animation: fadeUp 0.7s 0.15s ease both; }
+    .fade-up-d2 { animation: fadeUp 0.7s 0.3s ease both; }
+    .fade-up-d3 { animation: fadeUp 0.7s 0.45s ease both; }
+
+    /* Pulse dot */
+    @keyframes pulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.5; transform: scale(1.4); }
+    }
+    .pulse { animation: pulse 2s ease-in-out infinite; }
+
+    /* Responsive grid */
+    @media (max-width: 768px) {
+      .hero-grid { grid-template-columns: 1fr !important; }
+      .services-grid { grid-template-columns: 1fr 1fr !important; }
+      .projects-grid { grid-template-columns: 1fr !important; }
+      .stats-grid { grid-template-columns: 1fr 1fr !important; }
+      .contact-grid { grid-template-columns: 1fr !important; }
+      .desktop-nav { display: none !important; }
+      .hamburger { display: block !important; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- NAVBAR -->
+  <nav style="position: fixed; top: 0; left: 0; right: 0; z-index: 100; background: rgba(6,11,24,0.85); backdrop-filter: blur(16px); border-bottom: 1px solid rgba(255,107,0,0.1);">
+    <div style="max-width: 1200px; margin: 0 auto; padding: 0 24px; height: 68px; display: flex; align-items: center; justify-content: space-between;">
+      <div style="display: flex; align-items: center; gap: 10px; cursor: pointer;" onclick="scrollToSection('home')">
+        <div style="width: 36px; height: 36px; background: var(--orange); border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 1.1rem; font-weight: 800; color: white;">M</div>
+        <div>
+          <div style="font-weight: 800; font-size: 0.95rem; letter-spacing: 0.05em; line-height: 1;">MANU CREATIONS</div>
+          <div style="font-size: 0.65rem; color: var(--muted); letter-spacing: 0.08em;">BUILDING BRANDS IN THE DIGITAL AGE</div>
+        </div>
+      </div>
+
+      <div class="desktop-nav" style="display: flex; gap: 32px; align-items: center;">
+        <span class="nav-link active" data-target="home" onclick="scrollToSection('home')">Home</span>
+        <span class="nav-link" data-target="about" onclick="scrollToSection('about')">About</span>
+        <span class="nav-link" data-target="services" onclick="scrollToSection('services')">Services</span>
+        <span class="nav-link" data-target="portfolio" onclick="scrollToSection('portfolio')">Portfolio</span>
+        <span class="nav-link" data-target="contact" onclick="scrollToSection('contact')">Contact</span>
+        <button class="btn-primary" style="padding: 10px 22px; font-size: 0.8rem;" onclick="scrollToSection('contact')">Hire Me</button>
+      </div>
+
+      <button onclick="toggleMenu()" style="background: none; border: none; color: white; cursor: pointer; font-size: 1.4rem; display: none;" class="hamburger">☰</button>
+    </div>
+
+    <div id="mobile-menu" style="background: var(--navy2); border-top: 1px solid var(--border); padding: 16px 24px; display: none; flex-direction: column; gap: 16px;">
+      <span class="nav-link" onclick="scrollToSection('home'); toggleMenu()">Home</span>
+      <span class="nav-link" onclick="scrollToSection('about'); toggleMenu()">About</span>
+      <span class="nav-link" onclick="scrollToSection('services'); toggleMenu()">Services</span>
+      <span class="nav-link" onclick="scrollToSection('portfolio'); toggleMenu()">Portfolio</span>
+      <span class="nav-link" onclick="scrollToSection('contact'); toggleMenu()">Contact</span>
+    </div>
+  </nav>
+
+  <!-- HERO -->
+  <section id="home" class="hero-gradient grid-lines fade-up" style="min-height: 100vh; padding-top: 68px; display: flex; align-items: center;">
+    <div style="max-width: 1200px; margin: 0 auto; padding: 60px 24px; width: 100%;">
+      <div class="hero-grid" style="display: grid; grid-template-columns: 1fr 1fr; gap: 60px; align-items: center;">
+        <div>
+          <div class="glow-pill fade-up" style="margin-bottom: 24px;">🇰🇪 Nairobi-Based Digital Agency</div>
+          <h1 class="section-title fade-up-d1" style="margin-bottom: 24px; color: white;">
+            We Build <span style="color: var(--orange);">Digital</span> <br />
+            Experiences That <br />
+            <span style="-webkit-text-stroke: 1px rgba(255,255,255,0.3); color: transparent;">Convert.</span>
+          </h1>
+          <p class="fade-up-d2" style="color: var(--muted); font-size: 1.05rem; line-height: 1.7; margin-bottom: 36px; max-width: 480px;">
+            From sleek corporate websites to powerful e-commerce platforms — Manu Creations turns your vision into a high-performing digital product.
+          </p>
+          <div class="fade-up-d3" style="display: flex; gap: 16px; flex-wrap: wrap;">
+            <button class="btn-primary" onclick="scrollToSection('portfolio')">View My Work →</button>
+            <button class="btn-outline" onclick="scrollToSection('contact')">Get a Quote</button>
+          </div>
+
+          <div class="fade-up-d3" style="margin-top: 40px; display: inline-flex; align-items: center; gap: 12px; background: rgba(255,107,0,0.08); border: 1px solid rgba(255,107,0,0.25); border-radius: 12px; padding: 14px 20px;">
+            <div>
+              <div style="font-size: 0.72rem; color: var(--muted); letter-spacing: 0.08em; text-transform: uppercase;">Websites Starting From</div>
+              <div style="font-size: 1.6rem; font-weight: 800; color: var(--orange);">KES 19,999</div>
+            </div>
+            <div style="width: 1px; height: 40px; background: rgba(255,107,0,0.2);"></div>
+            <div style="font-size: 0.8rem; color: var(--muted); max-width: 120px; line-height: 1.4;">Professional & fully responsive</div>
+          </div>
+        </div>
+
+        <div style="display: flex; justify-content: center; position: relative;">
+          <div class="float" style="position: relative;">
+            <div style="width: 320px; height: 400px; border-radius: 20px; overflow: hidden; border: 2px solid rgba(255,107,0,0.3); box-shadow: 0 0 80px rgba(255,107,0,0.15), 0 40px 80px rgba(0,0,0,0.5);">
+              <img src="manu.jpg.jpeg" alt="Manu Creations" style="width: 100%; height: 100%; object-fit: cover;" />
+            </div>
+            <div style="position: absolute; bottom: -16px; left: -24px; background: var(--orange); border-radius: 12px; padding: 14px 20px; box-shadow: 0 8px 30px rgba(255,107,0,0.4);">
+              <div style="font-weight: 800; font-size: 1.5rem; color: white;">50+</div>
+              <div style="font-size: 0.72rem; color: rgba(255,255,255,0.8); letter-spacing: 0.06em;">PROJECTS DONE</div>
+            </div>
+            <div style="position: absolute; top: 20px; right: -24px; background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 12px 16px;">
+              <div style="display: flex; align-items: center; gap: 8px;">
+                <div class="pulse" style="width: 8px; height: 8px; background: #00e676; border-radius: 50%;"></div>
+                <span style="font-size: 0.78rem; font-weight: 600; color: #00e676;">Available for work</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- STATS -->
+  <div style="background: var(--navy2); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); padding: 40px 24px;">
+    <div style="max-width: 1200px; margin: 0 auto;">
+      <div class="stats-grid" style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 24px;">
+        <div class="stat-card" data-target="50" data-suffix="+">
+          <div style="font-size: 2.4rem; font-weight: 800; color: var(--orange);"><span class="counter">0</span>+</div>
+          <div style="color: var(--muted); font-size: 0.85rem; margin-top: 4px;">Projects Delivered</div>
+        </div>
+        <div class="stat-card" data-target="5" data-suffix="+">
+          <div style="font-size: 2.4rem; font-weight: 800; color: var(--orange);"><span class="counter">0</span>+</div>
+          <div style="color: var(--muted); font-size: 0.85rem; margin-top: 4px;">Years Experience</div>
+        </div>
+        <div class="stat-card" data-target="30" data-suffix="+">
+          <div style="font-size: 2.4rem; font-weight: 800; color: var(--orange);"><span class="counter">0</span>+</div>
+          <div style="color: var(--muted); font-size: 0.85rem; margin-top: 4px;">Happy Clients</div>
+        </div>
+        <div class="stat-card" data-target="100" data-suffix="%">
+          <div style="font-size: 2.4rem; font-weight: 800; color: var(--orange);"><span class="counter">0</span>%</div>
+          <div style="color: var(--muted); font-size: 0.85rem; margin-top: 4px;">Client Satisfaction</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ABOUT -->
+  <section id="about" style="padding: 100px 24px; max-width: 1200px; margin: 0 auto;">
+    <div class="hero-grid" style="display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: center;">
+      <div>
+        <div class="glow-pill" style="margin-bottom: 16px;">About Us</div>
+        <div class="accent-line" style="display: block; margin-bottom: 24px;"></div>
+        <h2 class="section-title" style="margin-bottom: 24px;">
+          Building Brands <br />in the <span style="color: var(--orange);">Digital Age</span>
+        </h2>
+        <p style="color: var(--muted); line-height: 1.8; margin-bottom: 20px;">
+          Manu Creations is a Nairobi-based digital agency specialising in website development, branding, and custom business solutions. We combine technical excellence with creative design to deliver products that don't just look great — they perform.
+        </p>
+        <p style="color: var(--muted); line-height: 1.8; margin-bottom: 32px;">
+          Whether you're a startup finding your footing or an established business scaling up, we tailor every solution to your unique goals and budget.
+        </p>
+        <div style="display: flex; gap: 16px; flex-wrap: wrap;">
+          <span class="tag" style="font-size: 0.8rem; padding: 6px 14px;">React & Vue.js</span>
+          <span class="tag" style="font-size: 0.8rem; padding: 6px 14px;">Node.js & Laravel</span>
+          <span class="tag" style="font-size: 0.8rem; padding: 6px 14px;">Figma & Illustrator</span>
+          <span class="tag" style="font-size: 0.8rem; padding: 6px 14px;">M-Pesa Integration</span>
+          <span class="tag" style="font-size: 0.8rem; padding: 6px 14px;">SEO & Analytics</span>
+        </div>
+      </div>
+      <div style="position: relative;">
+        <div style="background: var(--card); border: 1px solid var(--border); border-radius: 16px; padding: 32px;">
+          <div style="font-size: 2rem; margin-bottom: 12px;">🎯</div>
+          <h3 style="font-weight: 700; margin-bottom: 8px;">Our Mission</h3>
+          <p style="color: var(--muted); line-height: 1.7; margin-bottom: 24px;">To empower Kenyan and African businesses with world-class digital tools that drive real growth.</p>
+          <div style="height: 1px; background: var(--border); margin-bottom: 24px;"></div>
+          <div style="display: flex; gap: 16px;">
+            <a href="https://wa.me/254791511386" target="_blank" rel="noopener noreferrer" style="text-decoration: none;">
+              <button class="btn-primary" style="font-size: 0.8rem; padding: 10px 20px;">WhatsApp Us</button>
+            </a>
+            <a href="mailto:manucreations36@gmail.com" style="text-decoration: none;">
+              <button class="btn-outline" style="font-size: 0.8rem; padding: 10px 20px;">Email Us</button>
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SERVICES -->
+  <section id="services" style="padding: 100px 24px; background: var(--navy2);">
+    <div style="max-width: 1200px; margin: 0 auto;">
+      <div style="text-align: center; margin-bottom: 60px;">
+        <div class="glow-pill" style="margin-bottom: 16px;">What We Do</div>
+        <h2 class="section-title">Our <span style="color: var(--orange);">Services</span></h2>
+      </div>
+      <div class="services-grid" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px;">
+        <div class="service-card"><div style="font-size: 2.4rem; margin-bottom: 16px;">💻</div><h3 style="font-weight: 700; margin-bottom: 8px; font-size: 1.05rem;">Web Development</h3><p style="color: var(--muted); font-size: 0.9rem; line-height: 1.6;">Modern, fast websites built for conversion</p></div>
+        <div class="service-card"><div style="font-size: 2.4rem; margin-bottom: 16px;">🏢</div><h3 style="font-weight: 700; margin-bottom: 8px; font-size: 1.05rem;">Corporate Websites</h3><p style="color: var(--muted); font-size: 0.9rem; line-height: 1.6;">Professional online presence for businesses</p></div>
+        <div class="service-card"><div style="font-size: 2.4rem; margin-bottom: 16px;">🛍️</div><h3 style="font-weight: 700; margin-bottom: 8px; font-size: 1.05rem;">E-Commerce</h3><p style="color: var(--muted); font-size: 0.9rem; line-height: 1.6;">Online stores with local payment integration</p></div>
+        <div class="service-card"><div style="font-size: 2.4rem; margin-bottom: 16px;">🎨</div><h3 style="font-weight: 700; margin-bottom: 8px; font-size: 1.05rem;">Graphic Design & Branding</h3><p style="color: var(--muted); font-size: 0.9rem; line-height: 1.6;">Identities that stand out in the market</p></div>
+        <div class="service-card"><div style="font-size: 2.4rem; margin-bottom: 16px;">⚙️</div><h3 style="font-weight: 700; margin-bottom: 8px; font-size: 1.05rem;">Custom System Design</h3><p style="color: var(--muted); font-size: 0.9rem; line-height: 1.6;">Bespoke software tailored to your workflow</p></div>
+        <div class="service-card"><div style="font-size: 2.4rem; margin-bottom: 16px;">📡</div><h3 style="font-weight: 700; margin-bottom: 8px; font-size: 1.05rem;">Digital Services & SEO</h3><p style="color: var(--muted); font-size: 0.9rem; line-height: 1.6;">Grow visibility and dominate search results</p></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PORTFOLIO -->
+  <section id="portfolio" style="padding: 100px 24px;">
+    <div style="max-width: 1200px; margin: 0 auto;">
+      <div style="text-align: center; margin-bottom: 48px;">
+        <div class="glow-pill" style="margin-bottom: 16px;">Our Work</div>
+        <h2 class="section-title">Featured <span style="color: var(--orange);">Projects</span></h2>
+        <p style="color: var(--muted); margin-top: 16px; max-width: 480px; margin: 16px auto 0;">A selection of work across industries — each project built with purpose and precision.</p>
+      </div>
+
+      <div style="display: flex; gap: 10px; flex-wrap: wrap; justify-content: center; margin-bottom: 48px;">
+        <button class="filter-chip active" data-filter="All">All</button>
+        <button class="filter-chip" data-filter="Web Development">Web Development</button>
+        <button class="filter-chip" data-filter="Graphic Design & Branding">Graphic Design & Branding</button>
+        <button class="filter-chip" data-filter="Custom System Design">Custom System Design</button>
+        <button class="filter-chip" data-filter="Corporate Websites">Corporate Websites</button>
+        <button class="filter-chip" data-filter="Digital Services & SEO">Digital Services & SEO</button>
+      </div>
+
+      <div class="projects-grid" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px;">
+        <div class="project-card" data-category="Web Development">
+          <div style="height: 4px; background: linear-gradient(90deg, #FF6B00, transparent);"></div>
+          <div style="padding: 28px;">
+            <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 16px;">
+              <div style="font-size: 2rem;">🛒</div>
+              <span style="font-size: 0.7rem; color: var(--muted); background: rgba(255,255,255,0.05); padding: 4px 10px; border-radius: 999px; border: 1px solid rgba(255,255,255,0.08);">Web Development</span>
+            </div>
+            <h3 style="font-weight: 700; margin-bottom: 10px; font-size: 1.05rem;">E-Commerce Platform</h3>
+            <p style="color: var(--muted); font-size: 0.87rem; line-height: 1.6; margin-bottom: 20px;">Full-stack online store with M-Pesa payment integration, inventory management, and customer dashboard.</p>
+            <div style="display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 20px;">
+              <span class="tag">React</span><span class="tag">Node.js</span><span class="tag">M-Pesa</span>
+            </div>
+            <a href="https://github.com/manucreations" target="_blank" rel="noopener noreferrer" style="text-decoration: none;">
+              <button class="btn-outline" style="font-size: 0.8rem; padding: 8px 18px; width: 100%;">View Project →</button>
+            </a>
+          </div>
+        </div>
+
+        <div class="project-card" data-category="Graphic Design & Branding">
+          <div style="height: 4px; background: linear-gradient(90deg, #0052CC, transparent);"></div>
+          <div style="padding: 28px;">
+            <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 16px;">
+              <div style="font-size: 2rem;">🎨</div>
+              <span style="font-size: 0.7rem; color: var(--muted); background: rgba(255,255,255,0.05); padding: 4px 10px; border-radius: 999px; border: 1px solid rgba(255,255,255,0.08);">Graphic Design & Branding</span>
+            </div>
+            <h3 style="font-weight: 700; margin-bottom: 10px; font-size: 1.05rem;">Corporate Brand Identity</h3>
+            <p style="color: var(--muted); font-size: 0.87rem; line-height: 1.6; margin-bottom: 20px;">Complete brand overhaul for a Nairobi-based logistics firm — logo, stationery, and brand guidelines.</p>
+            <div style="display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 20px;">
+              <span class="tag">Illustrator</span><span class="tag">Figma</span><span class="tag">Branding</span>
+            </div>
+            <a href="https://behance.net/manucreations" target="_blank" rel="noopener noreferrer" style="text-decoration: none;">
+              <button class="btn-outline" style="font-size: 0.8rem; padding: 8px 18px; width: 100%;">View Project →</button>
+            </a>
+          </div>
+        </div>
+
+        <div class="project-card" data-category="Custom System Design">
+          <div style="height: 4px; background: linear-gradient(90deg, #00B894, transparent);"></div>
+          <div style="padding: 28px;">
+            <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 16px;">
+              <div style="font-size: 2rem;">📊</div>
+              <span style="font-size: 0.7rem; color: var(--muted); background: rgba(255,255,255,0.05); padding: 4px 10px; border-radius: 999px; border: 1px solid rgba(255,255,255,0.08);">Custom System Design</span>
+            </div>
+            <h3 style="font-weight: 700; margin-bottom: 10px; font-size: 1.05rem;">Business Management System</h3>
+            <p style="color: var(--muted); font-size: 0.87rem; line-height: 1.6; margin-bottom: 20px;">ERP-lite solution for SMEs: invoicing, staff records, stock tracking, and analytics dashboard.</p>
+            <div style="display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 20px;">
+              <span class="tag">Vue.js</span><span class="tag">Laravel</span><span class="tag">MySQL</span>
+            </div>
+            <a href="https://github.com/manucreations" target="_blank" rel="noopener noreferrer" style="text-decoration: none;">
+              <button class="btn-outline" style="font-size: 0.8rem; padding: 8px 18px; width: 100%;">View Project →</button>
+            </a>
+          </div>
+        </div>
+
+        <div class="project-card" data-category="Corporate Websites">
+          <div style="height: 4px; background: linear-gradient(90deg, #E84393, transparent);"></div>
+          <div style="padding: 28px;">
+            <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 16px;">
+              <div style="font-size: 2rem;">🍽️</div>
+              <span style="font-size: 0.7rem; color: var(--muted); background: rgba(255,255,255,0.05); padding: 4px 10px; border-radius: 999px; border: 1px solid rgba(255,255,255,0.08);">Corporate Websites</span>
+            </div>
+            <h3 style="font-weight: 700; margin-bottom: 10px; font-size: 1.05rem;">Restaurant Website & Booking</h3>
+            <p style="color: var(--muted); font-size: 0.87rem; line-height: 1.6; margin-bottom: 20px;">Elegant multi-page website with online reservation system and menu management for a Westlands restaurant.</p>
+            <div style="display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 20px;">
+              <span class="tag">WordPress</span><span class="tag">PHP</span><span class="tag">SEO</span>
+            </div>
+            <a href="mailto:manucreations36@gmail.com" style="text-decoration: none;">
+              <button class="btn-outline" style="font-size: 0.8rem; padding: 8px 18px; width: 100%;">View Project →</button>
+            </a>
+          </div>
+        </div>
+
+        <div class="project-card" data-category="Digital Services & SEO">
+          <div style="height: 4px; background: linear-gradient(90deg, #6C5CE7, transparent);"></div>
+          <div style="padding: 28px;">
+            <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 16px;">
+              <div style="font-size: 2rem;">📈</div>
+              <span style="font-size: 0.7rem; color: var(--muted); background: rgba(255,255,255,0.05); padding: 4px 10px; border-radius: 999px; border: 1px solid rgba(255,255,255,0.08);">Digital Services & SEO</span>
+            </div>
+            <h3 style="font-weight: 700; margin-bottom: 10px; font-size: 1.05rem;">SEO & Digital Growth</h3>
+            <p style="color: var(--muted); font-size: 0.87rem; line-height: 1.6; margin-bottom: 20px;">3-month campaign that boosted organic traffic by 340% for a Kenyan fintech startup.</p>
+            <div style="display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 20px;">
+              <span class="tag">SEO</span><span class="tag">Analytics</span><span class="tag">Content</span>
+            </div>
+            <a href="mailto:manucreations36@gmail.com" style="text-decoration: none;">
+              <button class="btn-outline" style="font-size: 0.8rem; padding: 8px 18px; width: 100%;">View Project →</button>
+            </a>
+          </div>
+        </div>
+
+        <div class="project-card" data-category="Web Development">
+          <div style="height: 4px; background: linear-gradient(90deg, #FDCB6E, transparent);"></div>
+          <div style="padding: 28px;">
+            <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 16px;">
+              <div style="font-size: 2rem;">💙</div>
+              <span style="font-size: 0.7rem; color: var(--muted); background: rgba(255,255,255,0.05); padding: 4px 10px; border-radius: 999px; border: 1px solid rgba(255,255,255,0.08);">Web Development</span>
+            </div>
+            <h3 style="font-weight: 700; margin-bottom: 10px; font-size: 1.05rem;">NGO Donor Portal</h3>
+            <p style="color: var(--muted); font-size: 0.87rem; line-height: 1.6; margin-bottom: 20px;">Secure donor management and online fundraising portal with real-time campaign tracking.</p>
+            <div style="display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 20px;">
+              <span class="tag">React</span><span class="tag">Supabase</span><span class="tag">Stripe</span>
+            </div>
+            <a href="https://github.com/manucreations" target="_blank" rel="noopener noreferrer" style="text-decoration: none;">
+              <button class="btn-outline" style="font-size: 0.8rem; padding: 8px 18px; width: 100%;">View Project →</button>
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CONTACT -->
+  <section id="contact" style="padding: 100px 24px; background: var(--navy2);">
+    <div style="max-width: 1200px; margin: 0 auto;">
+      <div style="text-align: center; margin-bottom: 60px;">
+        <div class="glow-pill" style="margin-bottom: 16px;">Get In Touch</div>
+        <h2 class="section-title">Let's Build <span style="color: var(--orange);">Something</span></h2>
+        <p style="color: var(--muted); margin-top: 12px; max-width: 440px; margin: 12px auto 0;">Ready to start your project? Fill in the form and we'll get back to you within 24 hours.</p>
+      </div>
+
+      <div class="contact-grid" style="display: grid; grid-template-columns: 1fr 1.4fr; gap: 48px; align-items: start;">
+        <div style="display: flex; flex-direction: column; gap: 20px;">
+          <div style="display: flex; gap: 16px; align-items: flex-start; background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 20px;">
+            <div style="font-size: 1.4rem;">📱</div>
+            <div>
+              <div style="font-size: 0.75rem; color: var(--muted); letter-spacing: 0.06em; text-transform: uppercase; margin-bottom: 4px;">WhatsApp / Call</div>
+              <a href="https://wa.me/254791511386" target="_blank" rel="noopener noreferrer" style="color: var(--orange); font-weight: 600; text-decoration: none; font-size: 0.95rem;">+254 791 511 386</a>
+            </div>
+          </div>
+          <div style="display: flex; gap: 16px; align-items: flex-start; background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 20px;">
+            <div style="font-size: 1.4rem;">✉️</div>
+            <div>
+              <div style="font-size: 0.75rem; color: var(--muted); letter-spacing: 0.06em; text-transform: uppercase; margin-bottom: 4px;">Email</div>
+              <a href="mailto:manucreations36@gmail.com" style="color: var(--orange); font-weight: 600; text-decoration: none; font-size: 0.95rem;">manucreations36@gmail.com</a>
+            </div>
+          </div>
+          <div style="display: flex; gap: 16px; align-items: flex-start; background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 20px;">
+            <div style="font-size: 1.4rem;">📍</div>
+            <div>
+              <div style="font-size: 0.75rem; color: var(--muted); letter-spacing: 0.06em; text-transform: uppercase; margin-bottom: 4px;">Location</div>
+              <span style="font-weight: 600; font-size: 0.95rem;">Nairobi, Kenya</span>
+            </div>
+          </div>
+
+          <div style="background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 20px;">
+            <div style="font-size: 0.75rem; color: var(--muted); letter-spacing: 0.06em; text-transform: uppercase; margin-bottom: 16px;">Samples & Portfolio</div>
+            <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+              <a href="https://github.com/manucreations" target="_blank" rel="noopener noreferrer" style="text-decoration: none;">
+                <span style="display: inline-block; background: rgba(255,107,0,0.1); border: 1px solid rgba(255,107,0,0.25); border-radius: 6px; padding: 6px 14px; font-size: 0.8rem; color: var(--orange); font-weight: 600; cursor: pointer;">GitHub ↗</span>
+              </a>
+              <a href="https://behance.net/manucreations" target="_blank" rel="noopener noreferrer" style="text-decoration: none;">
+                <span style="display: inline-block; background: rgba(255,107,0,0.1); border: 1px solid rgba(255,107,0,0.25); border-radius: 6px; padding: 6px 14px; font-size: 0.8rem; color: var(--orange); font-weight: 600; cursor: pointer;">Behance ↗</span>
+              </a>
+              <a href="https://linkedin.com/in/manucreations" target="_blank" rel="noopener noreferrer" style="text-decoration: none;">
+                <span style="display: inline-block; background: rgba(255,107,0,0.1); border: 1px solid rgba(255,107,0,0.25); border-radius: 6px; padding: 6px 14px; font-size: 0.8rem; color: var(--orange); font-weight: 600; cursor: pointer;">LinkedIn ↗</span>
+              </a>
+            </div>
+          </div>
+        </div>
+
+        <div style="background: var(--card); border: 1px solid var(--border); border-radius: 16px; padding: 36px 32px;">
+          <h3 style="font-weight: 700; margin-bottom: 24px; font-size: 1.1rem;">Send a Message</h3>
+          <form id="contact-form" style="display: flex; flex-direction: column; gap: 16px;">
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+              <div>
+                <label style="font-size: 0.8rem; color: var(--muted); display: block; margin-bottom: 6px;">Full Name *</label>
+                <input class="form-input" name="name" placeholder="John Doe" required>
+              </div>
+              <div>
+                <label style="font-size: 0.8rem; color: var(--muted); display: block; margin-bottom: 6px;">Email Address *</label>
+                <input class="form-input" name="email" type="email" placeholder="john@company.com" required>
+              </div>
+            </div>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+              <div>
+                <label style="font-size: 0.8rem; color: var(--muted); display: block; margin-bottom: 6px;">Phone / WhatsApp</label>
+                <input class="form-input" name="phone" placeholder="+254 7XX XXX XXX">
+              </div>
+              <div>
+                <label style="font-size: 0.8rem; color: var(--muted); display: block; margin-bottom: 6px;">Service Needed</label>
+                <select class="form-input" name="service" style="cursor: pointer;">
+                  <option value="">Select a service</option>
+                  <option value="Web Development">Web Development</option>
+                  <option value="Corporate Websites">Corporate Websites</option>
+                  <option value="E-Commerce">E-Commerce</option>
+                  <option value="Graphic Design & Branding">Graphic Design & Branding</option>
+                  <option value="Custom System Design">Custom System Design</option>
+                  <option value="Digital Services & SEO">Digital Services & SEO</option>
+                </select>
+              </div>
+            </div>
+            <div>
+              <label style="font-size: 0.8rem; color: var(--muted); display: block; margin-bottom: 6px;">Message *</label>
+              <textarea class="form-input" name="message" rows="5" placeholder="Tell us about your project..." required style="resize: vertical;"></textarea>
+            </div>
+
+            <div id="form-error" style="display: none; color: #ff6b6b; font-size: 0.85rem;"></div>
+            <div id="form-success" style="display: none; background: rgba(0,230,118,0.1); border: 1px solid rgba(0,230,118,0.3); border-radius: 8px; padding: 12px 16px; color: #00e676; font-size: 0.9rem;">✅ Message sent! We'll be in touch within 24 hours.</div>
+            <div id="form-general-error" style="display: none; background: rgba(255,107,107,0.1); border: 1px solid rgba(255,107,107,0.3); border-radius: 8px; padding: 12px 16px; color: #ff6b6b; font-size: 0.9rem;">⚠️ Something went wrong. Please try WhatsApp or email instead.</div>
+
+            <button type="submit" class="btn-primary" id="submit-btn" style="width: 100%; justify-content: center;">Send Message →</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer style="border-top: 1px solid var(--border); padding: 32px 24px;">
+    <div style="max-width: 1200px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px;">
+      <div style="display: flex; align-items: center; gap: 10px;">
+        <div style="width: 30px; height: 30px; background: var(--orange); border-radius: 6px; display: flex; align-items: center; justify-content: center; font-weight: 800; color: white; font-size: 0.85rem;">M</div>
+        <span style="font-weight: 700; font-size: 0.9rem;">MANU CREATIONS</span>
+      </div>
+      <div style="color: var(--muted); font-size: 0.8rem;">© 2026 Manu Creations · Nairobi, Kenya · Built with ❤️</div>
+      <div style="display: flex; gap: 16px;">
+        <a href="https://wa.me/254791511386" target="_blank" rel="noopener noreferrer" style="color: var(--muted); text-decoration: none; font-size: 0.8rem;">WhatsApp</a>
+        <a href="mailto:manucreations36@gmail.com" style="color: var(--muted); text-decoration: none; font-size: 0.8rem;">Email</a>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    // ── Supabase config ──────────────────────────────────────────────────────
+    const SUPABASE_URL = "https://mijeeteozinmbxfwgttc.supabase.co"; // Replace with actual URL
+    const SUPABASE_ANON_KEY = "sb_publishable_o0bEAkCtVHvZJ9Ld0q-Zag_79YjWSw1";        // Replace with actual key
+
+    // ── DOM Elements ──────────────────────────────────────────────────────────
+    const sections = ["home", "about", "services", "portfolio", "contact"];
+    const navLinks = document.querySelectorAll(".nav-link[data-target]");
+    const mobileMenu = document.getElementById("mobile-menu");
+    const projectCards = document.querySelectorAll(".project-card");
+    const filterChips = document.querySelectorAll(".filter-chip");
+    const statCards = document.querySelectorAll(".stat-card");
+    const form = document.getElementById("contact-form");
+    const submitBtn = document.getElementById("submit-btn");
+    const formError = document.getElementById("form-error");
+    const formSuccess = document.getElementById("form-success");
+    const formGeneralError = document.getElementById("form-general-error");
+
+    // ── Scroll Spy ────────────────────────────────────────────────────────────
+    function updateActiveSection() {
+      let current = sections[0];
+      sections.forEach(id => {
+        const el = document.getElementById(id);
+        if (el) {
+          const rect = el.getBoundingClientRect();
+          if (rect.top <= 100 && rect.bottom >= 100) current = id;
+        }
+      });
+      
+      navLinks.forEach(link => {
+        link.classList.toggle("active", link.dataset.target === current);
+      });
+    }
+    window.addEventListener("scroll", updateActiveSection);
+
+    // ── Smooth Scroll ─────────────────────────────────────────────────────────
+    function scrollToSection(id) {
+      document.getElementById(id)?.scrollIntoView({ behavior: "smooth" });
+      if (window.innerWidth <= 768) mobileMenu.style.display = "none";
+    }
+
+    // ── Mobile Menu ───────────────────────────────────────────────────────────
+    function toggleMenu() {
+      mobileMenu.style.display = mobileMenu.style.display === "flex" ? "none" : "flex";
+    }
+
+    // ── Portfolio Filter ──────────────────────────────────────────────────────
+    filterChips.forEach(chip => {
+      chip.addEventListener("click", () => {
+        filterChips.forEach(c => c.classList.remove("active"));
+        chip.classList.add("active");
+        const filter = chip.dataset.filter;
+        
+        projectCards.forEach(card => {
+          const cat = card.dataset.category;
+          card.style.display = (filter === "All" || cat === filter) ? "block" : "none";
+        });
+      });
+    });
+
+    // ── Animated Counters ─────────────────────────────────────────────────────
+    function animateCounter(element, target, suffix) {
+      let start = 0;
+      const step = Math.ceil(target / 60);
+      const timer = setInterval(() => {
+        start += step;
+        if (start >= target) {
+          element.textContent = target;
+          clearInterval(timer);
+        } else {
+          element.textContent = start;
+        }
+      }, 20);
+    }
+
+    const counterObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          const target = parseInt(entry.target.dataset.target);
+          const suffix = entry.target.dataset.suffix || "";
+          const counterEl = entry.target.querySelector(".counter");
+          animateCounter(counterEl, target, suffix);
+          counterObserver.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.5 });
+
+    statCards.forEach(card => counterObserver.observe(card));
+
+    // ── Form Handling ─────────────────────────────────────────────────────────
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const formData = new FormData(form);
+      const data = {
+        name: formData.get("name").trim(),
+        email: formData.get("email").trim(),
+        phone: formData.get("phone").trim(),
+        service: formData.get("service"),
+        message: formData.get("message").trim(),
+        created_at: new Date().toISOString()
+      };
+
+      if (!data.name || !data.email || !data.message) {
+        formError.textContent = "Please fill in name, email, and message.";
+        formError.style.display = "block";
+        formSuccess.style.display = "none";
+        formGeneralError.style.display = "none";
+        return;
+      }
+
+      formError.style.display = "none";
+      formSuccess.style.display = "none";
+      formGeneralError.style.display = "none";
+      submitBtn.textContent = "Sending...";
+      submitBtn.disabled = true;
+
+      try {
+        const res = await fetch(`${SUPABASE_URL}/rest/v1/contact_messages`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            apikey: SUPABASE_ANON_KEY,
+            Authorization: `Bearer ${SUPABASE_ANON_KEY}`,
+            Prefer: "return=minimal"
+          },
+          body: JSON.stringify(data)
+        });
+
+        if (!res.ok) throw new Error("Insert failed");
+        
+        formSuccess.style.display = "block";
+        form.reset();
+      } catch (err) {
+        formGeneralError.style.display = "block";
+      } finally {
+        submitBtn.textContent = "Send Message →";
+        submitBtn.disabled = false;
+      }
+    });
+
+    // Initial check
+    updateActiveSection();
+  </script>
+</body>
+</html>
